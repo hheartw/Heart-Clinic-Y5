@@ -12,7 +12,7 @@
         .pastel-PERIO { background-color: #dcfce7; color: #15803d; border-color: #bbf7d0; }
         .pastel-PROSTH { background-color: #e0f2fe; color: #0369a1; border-color: #bae6fd; }
         .pastel-PED1, .pastel-PED2 { background-color: #fef08a; color: #a16207; border-color: #fde047; }
-        .pastel-OCC { background-color: #f3e8ff; color: #7e22ce; border-color: #e9d5ff; }
+        .pastel-OCC, .pastel-OPD\ OCC { background-color: #f3e8ff; color: #7e22ce; border-color: #e9d5ff; }
         .pastel-ENDO { background-color: #e0e7ff; color: #4338ca; border-color: #c7d2fe; }
         .pastel-ORTHO { background-color: #ffedd5; color: #c2410c; border-color: #fed7aa; }
         .pastel-SurgIN, .pastel-SurgOUT { background-color: #fee2e2; color: #b91c1c; border-color: #fecaca; }
@@ -28,22 +28,20 @@
 </head>
 <body>
 
-    <!-- Header -->
     <div class="sticky top-0 bg-white/90 backdrop-blur-md z-10 border-b border-slate-200 px-4 py-3 flex justify-between items-center shadow-sm">
         <h1 class="text-xl font-bold text-slate-700">🦷 Clinic Life</h1>
         <span id="sync-status" class="text-[11px] text-slate-500 bg-slate-100 px-2 py-1 rounded-full font-medium flex items-center gap-1">
-            <span class="w-2 h-2 rounded-full bg-yellow-400" id="sync-dot"></span> <span id="sync-text">กำลังโหลด...</span>
+            <span class="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" id="sync-dot"></span> <span id="sync-text">กำลังโหลด...</span>
         </span>
     </div>
 
     <div class="max-w-xl mx-auto p-3">
         
-        <!-- ================= PAGE 1: DASHBOARD ================= -->
+        <!-- DASHBOARD -->
         <div id="page-dashboard" class="page-content active">
-            <!-- Overall Progress -->
             <div class="bg-white p-3 rounded-xl shadow-sm border border-slate-100 mb-5">
                 <div class="flex justify-between text-sm mb-2 text-slate-600 font-semibold">
-                    <span>Progress (รวม 137 คาบ)</span>
+                    <span id="progress-label">Progress</span>
                     <span id="progress-text" class="text-blue-600">0%</span>
                 </div>
                 <div class="w-full bg-slate-100 rounded-full h-2.5">
@@ -57,13 +55,13 @@
             <div id="this-week-list" class="space-y-3"></div>
         </div>
 
-        <!-- ================= PAGE 2: ALL CLINICS ================= -->
+        <!-- ALL CLINICS -->
         <div id="page-all" class="page-content">
             <h2 class="text-base font-bold text-slate-700 mb-2 px-1">คลินิกทั้งหมด (เทอม 1 - เทอม 2)</h2>
             <div id="all-clinic-list" class="space-y-3"></div>
         </div>
 
-        <!-- ================= PAGE 3: CASES ================= -->
+        <!-- CASES -->
         <div id="page-cases" class="page-content">
             <div class="flex gap-2 mb-4">
                 <div class="flex-1 bg-pink-50 p-3 rounded-xl border border-pink-100 flex flex-col items-center justify-center">
@@ -79,69 +77,46 @@
             <h2 class="text-base font-bold text-slate-700 mb-2 px-1">บันทึกเคสคลินิก</h2>
             <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-4 space-y-5">
                 
-                <!-- OPER -->
                 <div class="border-b pb-4">
                     <h3 class="font-bold text-pink-600 mb-3 flex items-center"><span class="text-lg mr-1">📝</span> OPER (หัตถการ)</h3>
                     <div class="space-y-3">
-                        <div>
-                            <label class="text-xs font-bold text-slate-600">Class I (5 ซี่)</label>
-                            <textarea id="case-oper-class1" class="w-full text-sm p-2 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white mt-1" rows="2" placeholder="เช่น 34O สมเกียรติ, 37O อรนลิน..." oninput="updateCaseData('oper-class1', this.value)"></textarea>
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold text-slate-600">Class II (20 surf)</label>
-                            <textarea id="case-oper-class2" class="w-full text-sm p-2 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white mt-1" rows="3" placeholder="เช่น 24OM ธิดา, 37OM ภูริทัต..." oninput="updateCaseData('oper-class2', this.value)"></textarea>
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold text-slate-600">Class III / IV (5 ซี่)</label>
-                            <textarea id="case-oper-class3" class="w-full text-sm p-2 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white mt-1" rows="2" placeholder="เช่น 23D ธิดา, 11M นิตยา..." oninput="updateCaseData('oper-class3', this.value)"></textarea>
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold text-slate-600">Class V (10 ซี่)</label>
-                            <textarea id="case-oper-class5" class="w-full text-sm p-2 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white mt-1" rows="2" placeholder="เช่น 35B สุธีรา..." oninput="updateCaseData('oper-class5', this.value)"></textarea>
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold text-slate-600">Treatment Plan / Recall</label>
-                            <textarea id="case-oper-tx" class="w-full text-sm p-2 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white mt-1" rows="2" placeholder="บันทึก..." oninput="updateCaseData('oper-tx', this.value)"></textarea>
-                        </div>
+                        <div><label class="text-xs font-bold text-slate-600">Class I (5 ซี่)</label>
+                        <textarea id="case-oper-class1" class="w-full text-sm p-2 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white mt-1" rows="2" oninput="updateCaseData('oper-class1', this.value)"></textarea></div>
+                        <div><label class="text-xs font-bold text-slate-600">Class II (20 surf)</label>
+                        <textarea id="case-oper-class2" class="w-full text-sm p-2 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white mt-1" rows="3" oninput="updateCaseData('oper-class2', this.value)"></textarea></div>
+                        <div><label class="text-xs font-bold text-slate-600">Class III / IV (5 ซี่)</label>
+                        <textarea id="case-oper-class3" class="w-full text-sm p-2 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white mt-1" rows="2" oninput="updateCaseData('oper-class3', this.value)"></textarea></div>
+                        <div><label class="text-xs font-bold text-slate-600">Class V (10 ซี่)</label>
+                        <textarea id="case-oper-class5" class="w-full text-sm p-2 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white mt-1" rows="2" oninput="updateCaseData('oper-class5', this.value)"></textarea></div>
+                        <div><label class="text-xs font-bold text-slate-600">Treatment Plan / Recall</label>
+                        <textarea id="case-oper-tx" class="w-full text-sm p-2 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white mt-1" rows="2" oninput="updateCaseData('oper-tx', this.value)"></textarea></div>
                     </div>
                 </div>
 
-                <!-- PERIO -->
                 <div class="border-b pb-4">
                     <h3 class="font-bold text-green-600 mb-3 flex items-center"><span class="text-lg mr-1">🪥</span> PERIO (ปริทันต์)</h3>
                     <div class="space-y-3">
-                        <div>
-                            <label class="text-xs font-bold text-slate-600">MS MG (6 เคส)</label>
-                            <textarea id="case-perio-ms" class="w-full text-sm p-2 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white mt-1" rows="2" placeholder="เช่น สมบูรณ์ 645458..." oninput="updateCaseData('perio-ms', this.value)"></textarea>
-                        </div>
+                        <div><label class="text-xs font-bold text-slate-600">MS MG (6 เคส)</label>
+                        <textarea id="case-perio-ms" class="w-full text-sm p-2 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white mt-1" rows="3" oninput="updateCaseData('perio-ms', this.value)"></textarea></div>
                         <div class="grid grid-cols-2 gap-2">
-                            <div>
-                                <label class="text-xs font-bold text-slate-600">G (3 เคส)</label>
-                                <textarea id="case-perio-g" class="w-full text-sm p-2 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white mt-1" rows="2" oninput="updateCaseData('perio-g', this.value)"></textarea>
-                            </div>
-                            <div>
-                                <label class="text-xs font-bold text-slate-600">P (1 เคส)</label>
-                                <textarea id="case-perio-p" class="w-full text-sm p-2 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white mt-1" rows="2" oninput="updateCaseData('perio-p', this.value)"></textarea>
-                            </div>
+                            <div><label class="text-xs font-bold text-slate-600">G (3 เคส)</label>
+                            <textarea id="case-perio-g" class="w-full text-sm p-2 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white mt-1" rows="2" oninput="updateCaseData('perio-g', this.value)"></textarea></div>
+                            <div><label class="text-xs font-bold text-slate-600">P (1 เคส)</label>
+                            <textarea id="case-perio-p" class="w-full text-sm p-2 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white mt-1" rows="2" oninput="updateCaseData('perio-p', this.value)"></textarea></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- PROSTH -->
                 <div>
                     <h3 class="font-bold text-blue-600 mb-3 flex items-center"><span class="text-lg mr-1">🦷</span> PROSTH (ประดิษฐ์)</h3>
-                    <div>
-                        <label class="text-xs font-bold text-slate-600">บันทึกเคสและงาน</label>
-                        <textarea id="case-prosth" class="w-full text-sm p-2 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white mt-1" rows="4" placeholder="เช่น ประภาพันธ์: U/L Removable bridge..." oninput="updateCaseData('prosth', this.value)"></textarea>
-                    </div>
+                    <div><label class="text-xs font-bold text-slate-600">บันทึกเคสและงาน</label>
+                    <textarea id="case-prosth" class="w-full text-sm p-2 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white mt-1" rows="5" oninput="updateCaseData('prosth', this.value)"></textarea></div>
                 </div>
-
             </div>
         </div>
-
     </div>
 
-    <!-- Bottom Navigation -->
+    <!-- Bottom Nav -->
     <div class="fixed bottom-0 w-full bg-white border-t border-slate-200 flex justify-around p-2 pb-safe shadow-[0_-4px_10px_-1px_rgba(0,0,0,0.05)]">
         <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn active flex flex-col items-center w-20 py-1">
             <span class="text-xl mb-0.5 drop-shadow-sm">🏠</span>
@@ -158,24 +133,10 @@
     </div>
 
     <script>
-        // 🚨 1. ใส่ URL ของ Web App ตรงนี้ (อย่าลืม Deploy เป็น New Version) 🚨
-        const API_URL = 'https://script.google.com/macros/s/AKfycbyDy1UIIutvugYakSI-LYlsj3GBPz_FdcnYEKPResm8sgCPZCofalYt1rO9E4ZAh83H/exec'; 
+        // 🚨 1. ใส่ URL ของ Web App ตรงนี้ 🚨
+        const API_URL = 'https://script.google.com/macros/s/AKfycbwqH_5Mhe3meyFuzvVrG1wTbomTp6I9SCXV_SDgh6oGPRRwgQIKh1DDiKbTf1kkQIGP/exec'; 
         
-        let appState = {
-            schedule: [
-                // *** ตัวอย่างข้อมูล (ถ้าออฟไลน์) ***
-                { "id": "t1-w1-1", "date": "2026-07-06", "period": "เช้า", "clinic": "PED2", "unit": "-", "task": "Orientation", "req": "", "credit": "", "apptDone": true, "toolBooked": false },
-                { "id": "t1-w1-2", "date": "2026-07-06", "period": "บ่าย", "clinic": "PED2", "unit": "-", "task": "ด.ญ.ธัญชนก จันทร์ทิม", "req": "", "credit": "2", "apptDone": true, "toolBooked": false },
-                { "id": "t1-w1-3", "date": "2026-07-07", "period": "เช้า", "clinic": "OPER", "unit": "12-48", "task": "ธิดา 66-2005 24OM", "req": "2", "credit": "", "apptDone": true, "toolBooked": false },
-                { "id": "t1-w1-4", "date": "2026-07-07", "period": "บ่าย", "clinic": "PROSTH", "unit": "-", "task": "Chart เอกวาระ", "req": "", "credit": "", "apptDone": true, "toolBooked": true },
-                { "id": "t1-w10-1", "date": "2026-09-08", "period": "เช้า", "clinic": "PERIO", "unit": "13-34", "task": "เอมอร 692277", "req": "", "credit": "", "apptDone": false, "toolBooked": false },
-                { "id": "t1-w11-1", "date": "2026-09-14", "period": "เช้า", "clinic": "OPER", "unit": "36", "task": "อรมนัส", "req": "1.5", "credit": "", "apptDone": true, "toolBooked": false },
-                { "id": "t1-w12-1", "date": "2026-09-22", "period": "เช้า", "clinic": "PERIO", "unit": "13-34", "task": "ประเสริฐ", "req": "", "credit": "", "apptDone": false, "toolBooked": false }
-            ],
-            cases: {}
-        };
-
-        const TOTAL_CLINICS = 137;
+        let appState = { schedule: [], cases: {} };
 
         function setStatus(text, colorClass) {
             document.getElementById('sync-text').textContent = text;
@@ -195,38 +156,30 @@
                 const response = await fetch(API_URL);
                 const data = await response.json();
                 
-                // รองรับข้อมูลโครงสร้างเก่าและใหม่
-                if(data.schedule) {
-                    appState = data;
-                } else if (Array.isArray(data) && data.length > 0) {
-                    appState.schedule = data;
-                }
+                if(data.schedule) appState = data;
                 
-                // ใส่ข้อมูลกลับไปในช่อง Textarea
-                for (const [key, value] of Object.entries(appState.cases)) {
-                    if(document.getElementById(`case-${key}`)) {
-                        document.getElementById(`case-${key}`).value = value;
-                    }
+                for (const [key, value] of Object.entries(appState.cases || {})) {
+                    if(document.getElementById(`case-${key}`)) document.getElementById(`case-${key}`).value = value;
                 }
 
                 setStatus('อัปเดตล่าสุด', 'bg-green-500');
                 renderApp();
             } catch (error) {
-                setStatus('ออฟไลน์ (ข้อมูลในเครื่อง)', 'bg-red-500');
-                renderApp();
+                setStatus('ออฟไลน์ (เชื่อมต่อไม่สำเร็จ)', 'bg-red-500');
             }
         }
 
         async function saveData() {
             setStatus('กำลังเซฟ...', 'bg-yellow-400 animate-pulse');
             try {
+                // เปลี่ยน Content-Type เป็น text/plain เพื่อทะลวง Block CORS
                 await fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(appState)
                 });
                 setStatus('เซฟสำเร็จ', 'bg-green-500');
-                calculateAutoSum(); // อัปเดตตัวเลข Req/Credit หลังจากเซฟ
+                calculateAutoSum();
             } catch (error) {
                 setStatus('เซฟล้มเหลว', 'bg-red-500');
             }
@@ -243,6 +196,7 @@
         }
 
         function updateCaseData(field, value) {
+            if(!appState.cases) appState.cases = {};
             appState.cases[field] = value;
             clearTimeout(timeout);
             timeout = setTimeout(saveData, 1000);
@@ -252,7 +206,7 @@
             const index = appState.schedule.findIndex(item => item.id === id);
             if(index > -1) {
                 appState.schedule[index][field] = isChecked;
-                renderApp(); // ล้าง Alert บนจอทันที
+                renderApp(); 
                 saveData();
             }
         }
@@ -288,13 +242,13 @@
             
             let extraInputs = '';
             if(item.clinic === 'OPER') {
-                extraInputs = `<input type="number" placeholder="Req" class="w-16 text-[13px] py-1.5 px-2 border border-white/60 rounded-lg bg-white/70 focus:bg-white text-center shadow-sm placeholder-slate-400 focus:outline-none" value="${item.req}" oninput="updateData('${item.id}', 'req', this.value)">`;
+                extraInputs = `<input type="number" step="0.5" placeholder="Req" class="w-[60px] text-[13px] py-1.5 px-2 border border-white/60 rounded-lg bg-white/70 focus:bg-white text-center shadow-sm placeholder-slate-400 focus:outline-none" value="${item.req}" oninput="updateData('${item.id}', 'req', this.value)">`;
             } else if (item.clinic.startsWith('PED')) {
-                extraInputs = `<input type="number" placeholder="Credit" class="w-16 text-[13px] py-1.5 px-2 border border-white/60 rounded-lg bg-white/70 focus:bg-white text-center shadow-sm placeholder-slate-400 focus:outline-none" value="${item.credit}" oninput="updateData('${item.id}', 'credit', this.value)">`;
+                extraInputs = `<input type="number" step="0.5" placeholder="Credit" class="w-[60px] text-[13px] py-1.5 px-2 border border-white/60 rounded-lg bg-white/70 focus:bg-white text-center shadow-sm placeholder-slate-400 focus:outline-none" value="${item.credit}" oninput="updateData('${item.id}', 'credit', this.value)">`;
             }
 
-            // เงื่อนไขทำนัด: โชว์เฉพาะ 7 คลินิกที่ระบุ
-            const needsAppt = ['OPER', 'PERIO', 'PROSTH', 'OCC', 'ENDO', 'PED1', 'PED2'].includes(item.clinic);
+            // เงื่อนไขทำนัด: โชว์เฉพาะ 7 คลินิก
+            const needsAppt = ['OPER', 'PERIO', 'PROSTH', 'OCC', 'OPD OCC', 'OPD PROSTH', 'ENDO', 'PED1', 'PED2'].includes(item.clinic);
             const apptCheckbox = needsAppt ? `
                 <label class="flex items-center text-[13px] cursor-pointer font-medium">
                     <input type="checkbox" class="mr-1.5 w-4 h-4 text-blue-500 rounded border-slate-300 bg-white" ${item.apptDone ? 'checked' : ''} onchange="toggleCheckbox('${item.id}', 'apptDone', this.checked)">
@@ -314,7 +268,6 @@
                     ${dtisLink}
                 </div>` : '';
 
-            // ซ่อนแถบเครื่องมือด้านล่างเลยถ้าไม่มีให้ติ๊กสักอย่าง
             const footerSection = (apptCheckbox || toolCheckbox) ? `
                 <div class="flex flex-wrap items-center gap-x-5 gap-y-2 pt-2 border-t border-black/5 mt-1">
                     ${apptCheckbox}
@@ -352,6 +305,7 @@
             next7Days.setDate(today.getDate() + 7);
 
             let pastCount = 0;
+            const totalClinics = appState.schedule.length || 137;
             const thisWeekEl = document.getElementById('this-week-list');
             const allClinicEl = document.getElementById('all-clinic-list');
             const alertEl = document.getElementById('alert-container');
@@ -361,22 +315,15 @@
             alertEl.innerHTML = '';
 
             const sortedData = [...appState.schedule].sort((a,b) => new Date(a.date) - new Date(b.date));
-
             let currentWeekStr = "";
 
             sortedData.forEach(item => {
                 const itemDate = new Date(item.date);
                 itemDate.setHours(0,0,0,0);
 
-                // --- 1. Progress Calculation ---
-                // ถ้าน้อยกว่าวันนี้ = ผ่านไปแล้ว || ถ้าเป็นวันนี้คาบเช้า และเลยเที่ยงแล้ว = ผ่านไปแล้ว
-                if(itemDate < today) {
-                    pastCount++;
-                } else if (itemDate.getTime() === today.getTime() && item.period === 'เช้า' && new Date().getHours() >= 12) {
-                    pastCount++;
-                }
+                if(itemDate < today) pastCount++;
+                else if (itemDate.getTime() === today.getTime() && item.period === 'เช้า' && new Date().getHours() >= 12) pastCount++;
 
-                // --- 2. Alerts (จองเครื่องมือ) ---
                 if((item.clinic === 'PROSTH' || item.clinic === 'PERIO') && !item.toolBooked) {
                     const workingDaysLeft = getWorkingDaysDiff(item.date);
                     if(workingDaysLeft >= 0 && workingDaysLeft <= 2) {
@@ -394,35 +341,30 @@
                     }
                 }
 
-                // --- 3. Render Cards ---
                 const cardHtml = generateCardHTML(item);
                 
-                // สำหรับหน้า "ทั้งหมด" ทำเส้นแบ่งสัปดาห์ (ดูจากวันจันทร์)
+                // เส้นแบ่งสัปดาห์
                 let itemMonday = new Date(itemDate);
                 itemMonday.setDate(itemDate.getDate() - (itemDate.getDay() === 0 ? 6 : itemDate.getDay() - 1));
                 let weekStr = itemMonday.toLocaleDateString('th-TH', {day:'numeric', month:'short', year:'2-digit'});
                 
                 if(weekStr !== currentWeekStr) {
-                    allClinicEl.innerHTML += `<div class="mt-6 mb-2 flex items-center"><div class="flex-grow border-t border-slate-300"></div><span class="px-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest">สัปดาห์เริ่ม ${weekStr}</span><div class="flex-grow border-t border-slate-300"></div></div>`;
+                    allClinicEl.innerHTML += `<div class="mt-6 mb-2 flex items-center"><div class="flex-grow border-t border-slate-300"></div><span class="px-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest">สัปดาห์เริ่ม จันทร์ ${weekStr}</span><div class="flex-grow border-t border-slate-300"></div></div>`;
                     currentWeekStr = weekStr;
                 }
 
                 allClinicEl.innerHTML += cardHtml; 
-                
-                // ลงหน้าแรกเฉพาะงานใน 7 วันนี้
-                if(itemDate >= today && itemDate <= next7Days) {
-                    thisWeekEl.innerHTML += cardHtml;
-                }
+                if(itemDate >= today && itemDate <= next7Days) thisWeekEl.innerHTML += cardHtml;
             });
 
             if(thisWeekEl.innerHTML === '') {
                 thisWeekEl.innerHTML = `<div class="text-center p-6 text-slate-400 text-sm bg-slate-50 rounded-xl border border-dashed border-slate-200">ไม่มีคลินิกในช่วง 7 วันนี้ครับ 🎉</div>`;
             }
 
-            // คำนวณ % จาก 137 คาบ
-            const progressPercent = Math.round((pastCount / TOTAL_CLINICS) * 100);
+            document.getElementById('progress-label').textContent = `Progress (รวม ${totalClinics} คาบ)`;
+            const progressPercent = totalClinics > 0 ? Math.round((pastCount / totalClinics) * 100) : 0;
             document.getElementById('progress-bar').style.width = `${progressPercent}%`;
-            document.getElementById('progress-text').textContent = `${progressPercent}% (${pastCount}/${TOTAL_CLINICS})`;
+            document.getElementById('progress-text').textContent = `${progressPercent}% (${pastCount}/${totalClinics})`;
 
             calculateAutoSum();
         }
