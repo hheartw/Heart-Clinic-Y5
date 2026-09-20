@@ -3,65 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Heart's Clinic Planner</title>
-    <!-- ใช้ Tailwind CSS สำหรับความ Clean & Pastel -->
+    <title>Clinic Life - Wutisilp</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- ใช้ Font Noto Sans Thai -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Noto Sans Thai', sans-serif; background-color: #f8fafc; }
+        body { font-family: 'Noto Sans Thai', sans-serif; background-color: #f8fafc; padding-bottom: 80px; }
         .pastel-OPER { background-color: #fce7f3; color: #be185d; border-color: #fbcfe8; }
         .pastel-PERIO { background-color: #dcfce7; color: #15803d; border-color: #bbf7d0; }
         .pastel-PROSTH { background-color: #e0f2fe; color: #0369a1; border-color: #bae6fd; }
         .pastel-PED1, .pastel-PED2 { background-color: #fef08a; color: #a16207; border-color: #fde047; }
         .pastel-OCC { background-color: #f3e8ff; color: #7e22ce; border-color: #e9d5ff; }
+        .pastel-ORTHO { background-color: #ffedd5; color: #c2410c; border-color: #fed7aa; }
+        .pastel-X-RAY { background-color: #f3f4f6; color: #374151; border-color: #e5e7eb; }
         .pastel-DEFAULT { background-color: #f1f5f9; color: #334155; border-color: #e2e8f0; }
+        
+        .tab-btn.active { color: #3b82f6; font-weight: 600; }
+        .tab-btn { color: #94a3b8; font-weight: 400; transition: all 0.2s; }
+        .page-content { display: none; }
+        .page-content.active { display: block; }
     </style>
 </head>
-<body class="pb-20">
+<body>
 
-    <div class="max-w-xl mx-auto p-4">
-        <!-- Header & Sync Status -->
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-bold text-slate-700">🦷 Clinic Life</h1>
-            <span id="sync-status" class="text-xs text-slate-400 bg-slate-100 px-2 py-1 rounded-full">ดึงข้อมูลล่าสุด...</span>
-        </div>
+    <!-- Header -->
+    <div class="sticky top-0 bg-white/90 backdrop-blur-md z-10 border-b border-slate-200 px-4 py-3 flex justify-between items-center shadow-sm">
+        <h1 class="text-xl font-bold text-slate-700">🦷 Clinic Life</h1>
+        <span id="sync-status" class="text-[11px] text-slate-500 bg-slate-100 px-2 py-1 rounded-full font-medium">กำลังโหลด...</span>
+    </div>
 
-        <!-- Overall Progress -->
-        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 mb-6">
-            <div class="flex justify-between text-sm mb-2 text-slate-600 font-semibold">
-                <span>Progress คลินิกทั้งหมด</span>
-                <span id="progress-text">0%</span>
+    <div class="max-w-xl mx-auto p-3">
+        
+        <!-- ================= PAGE 1: DASHBOARD ================= -->
+        <div id="page-dashboard" class="page-content active">
+            <!-- Overall Progress -->
+            <div class="bg-white p-3 rounded-xl shadow-sm border border-slate-100 mb-5">
+                <div class="flex justify-between text-sm mb-2 text-slate-600 font-semibold">
+                    <span>Progress (รวม 137 คาบ)</span>
+                    <span id="progress-text" class="text-blue-600">0%</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-2.5">
+                    <div id="progress-bar" class="bg-blue-500 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
             </div>
-            <div class="w-full bg-slate-100 rounded-full h-3">
-                <div id="progress-bar" class="bg-blue-400 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+
+            <!-- Alert Area -->
+            <div id="alert-container" class="mb-5 space-y-2"></div>
+
+            <h2 class="text-base font-bold text-slate-700 mb-2 px-1">คลินิกสัปดาห์นี้ (7 วันล่วงหน้า)</h2>
+            <div id="this-week-list" class="space-y-3"></div>
+        </div>
+
+        <!-- ================= PAGE 2: ALL CLINICS ================= -->
+        <div id="page-all" class="page-content">
+            <h2 class="text-base font-bold text-slate-700 mb-2 px-1">คลินิกทั้งหมด (เรียงตามวันที่)</h2>
+            <div id="all-clinic-list" class="space-y-3"></div>
+        </div>
+
+        <!-- ================= PAGE 3: CASES ================= -->
+        <div id="page-cases" class="page-content">
+            <h2 class="text-base font-bold text-slate-700 mb-2 px-1">รวบรวมเคส (Requirements)</h2>
+            <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-4 space-y-4">
+                
+                <div class="border-b pb-3">
+                    <h3 class="font-bold text-pink-600 mb-2">OPER (หัตถการ)</h3>
+                    <ul class="text-sm space-y-2 text-slate-600">
+                        <li class="flex justify-between"><span>Class I (5 ซี่)</span> <span class="font-semibold text-slate-800">2 / 5</span></li>
+                        <li class="flex justify-between"><span>Class II (20 surf)</span> <span class="font-semibold text-slate-800">17 / 20</span></li>
+                        <li class="flex justify-between"><span>Class III, IV (5 ซี่)</span> <span class="font-semibold text-slate-800">3 / 5</span></li>
+                        <li class="flex justify-between"><span>Class V (10 ซี่)</span> <span class="font-semibold text-slate-800">10 / 10 ✅</span></li>
+                    </ul>
+                </div>
+
+                <div class="border-b pb-3">
+                    <h3 class="font-bold text-green-600 mb-2">PERIO (ปริทันต์)</h3>
+                    <ul class="text-sm space-y-2 text-slate-600">
+                        <li class="flex justify-between"><span>MS MG (6 เคส)</span> <span class="font-semibold text-slate-800">6 / 6 ✅</span></li>
+                        <li class="flex justify-between"><span>G (3 เคส)</span> <span class="font-semibold text-slate-800">3 / 3 ✅</span></li>
+                        <li class="flex justify-between"><span>P (1 เคส)</span> <span class="font-semibold text-slate-800">1 / 1 ✅</span></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-blue-600 mb-2">PROSTH (ประดิษฐ์)</h3>
+                    <ul class="text-sm space-y-2 text-slate-600 leading-relaxed">
+                        <li><b>ประภาพันธ์:</b> U/L Removable bridge</li>
+                        <li><b>สุวรรณา:</b> UMRPD tissue / LMRPD tooth</li>
+                        <li><b>สุปราณี:</b> UARPD 7 ซี่ / LARPD 8 ซี่</li>
+                    </ul>
+                </div>
+
             </div>
         </div>
 
-        <!-- Alert Area -->
-        <div id="alert-container" class="mb-6 space-y-2"></div>
+    </div>
 
-        <!-- Clinics List -->
-        <h2 class="text-lg font-semibold text-slate-700 mb-3">คลินิกที่กำลังจะมาถึง</h2>
-        <div id="clinic-list" class="space-y-4">
-            <!-- Cards จะถูกสร้างจาก JS -->
-        </div>
+    <!-- Bottom Navigation -->
+    <div class="fixed bottom-0 w-full bg-white border-t border-slate-200 flex justify-around p-2 pb-safe shadow-[0_-4px_10px_-1px_rgba(0,0,0,0.05)]">
+        <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn active flex flex-col items-center w-20 py-1">
+            <span class="text-xl mb-0.5 drop-shadow-sm">🏠</span>
+            <span class="text-[10px] font-medium">สัปดาห์นี้</span>
+        </button>
+        <button onclick="switchTab('all')" id="btn-all" class="tab-btn flex flex-col items-center w-20 py-1">
+            <span class="text-xl mb-0.5 drop-shadow-sm">📅</span>
+            <span class="text-[10px] font-medium">ทั้งหมด</span>
+        </button>
+        <button onclick="switchTab('cases')" id="btn-cases" class="tab-btn flex flex-col items-center w-20 py-1">
+            <span class="text-xl mb-0.5 drop-shadow-sm">🦷</span>
+            <span class="text-[10px] font-medium">รวมเคส</span>
+        </button>
     </div>
 
     <script>
-        // 1. ใส่ URL ของ Web App ที่ได้จาก Apps Script ตรงนี้ !!!
-        const API_URL = 'https://script.google.com/macros/s/AKfycbxKzRcLKbngcFlQFHOwykOomYhzjHkrU7U581tbk8KRNSwB3CUGV496PQCDsFNhiNv6/exec'; 
+        // 🚨 1. ใส่ URL ของ Web App ตรงนี้ 🚨
+        const API_URL = 'https://script.google.com/macros/s/AKfycbwLCA2BXIYN9PSa-u2WaKhZ4bH01g3lWYFaujwwDYLg10CQ-0h7aN7fZyws3ZNKQ7Hh/exec'; 
         
-        // ข้อมูลตัวอย่าง (ถ้าโหลดจาก API ไม่ได้ หรือเพิ่งเริ่มใช้ครั้งแรก)
         let scheduleData = [
-            { id: "1", date: "2026-09-22", period: "เช้า", clinic: "PERIO", unit: "13-34", task: "ประเสริฐ ScRP", req: "", credit: "", apptDone: true, toolBooked: false },
-            { id: "2", date: "2026-09-22", period: "บ่าย", clinic: "PROSTH", unit: "-", task: "สุปราณี", req: "", credit: "", apptDone: false, toolBooked: false },
-            { id: "3", date: "2026-09-23", period: "เช้า", clinic: "OPER", unit: "12-36", task: "อรมนัส", req: "", credit: "", apptDone: false, toolBooked: false }
+            { "id": "11-mon", "date": "2026-09-14", "period": "เช้า", "clinic": "OPER", "unit": "36", "task": "อรมนัส", "req": "", "credit": "", "apptDone": true, "toolBooked": false },
+            { "id": "11-tue1", "date": "2026-09-15", "period": "เช้า", "clinic": "PERIO", "unit": "13-47", "task": "สุธีรา", "req": "", "credit": "", "apptDone": true, "toolBooked": true },
+            { "id": "11-tue2", "date": "2026-09-15", "period": "บ่าย", "clinic": "PROSTH", "unit": "-", "task": "ประภาพันธ์ / ถอนสุวรรณา", "req": "", "credit": "", "apptDone": true, "toolBooked": true },
+            { "id": "11-wed", "date": "2026-09-16", "period": "เช้า", "clinic": "OCC", "unit": "-", "task": "บุญมาลัย", "req": "", "credit": "", "apptDone": true, "toolBooked": false },
+            { "id": "11-thu1", "date": "2026-09-17", "period": "เช้า", "clinic": "X-RAY", "unit": "-", "task": "", "req": "", "credit": "", "apptDone": false, "toolBooked": false },
+            { "id": "11-thu2", "date": "2026-09-17", "period": "บ่าย", "clinic": "X-RAY", "unit": "-", "task": "Interprete พรกวี", "req": "", "credit": "", "apptDone": false, "toolBooked": false },
+            { "id": "12-mon", "date": "2026-09-21", "period": "เช้า", "clinic": "OPER", "unit": "36", "task": "ธิดา", "req": "", "credit": "", "apptDone": true, "toolBooked": false },
+            { "id": "12-tue1", "date": "2026-09-22", "period": "เช้า", "clinic": "PERIO", "unit": "13-34", "task": "ประเสริฐ", "req": "", "credit": "", "apptDone": false, "toolBooked": false },
+            { "id": "12-tue2", "date": "2026-09-22", "period": "บ่าย", "clinic": "PROSTH", "unit": "-", "task": "สุปราณี ?", "req": "", "credit": "", "apptDone": false, "toolBooked": false },
+            { "id": "12-wed", "date": "2026-09-23", "period": "เช้า", "clinic": "X-RAY", "unit": "-", "task": "Journal club", "req": "", "credit": "", "apptDone": false, "toolBooked": false },
+            { "id": "12-thu1", "date": "2026-09-24", "period": "เช้า", "clinic": "ORTHO", "unit": "-", "task": "", "req": "", "credit": "", "apptDone": false, "toolBooked": false },
+            { "id": "12-thu2", "date": "2026-09-24", "period": "บ่าย", "clinic": "ORTHO", "unit": "-", "task": "", "req": "", "credit": "", "apptDone": false, "toolBooked": false }
         ];
 
-        // --- Functions --- //
+        const TOTAL_CLINICS = 137;
 
-        // ดึงข้อมูลจาก Backend
+        function switchTab(tabId) {
+            document.querySelectorAll('.page-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(`page-${tabId}`).classList.add('active');
+            document.getElementById(`btn-${tabId}`).classList.add('active');
+            window.scrollTo(0,0);
+        }
+
         async function loadData() {
             try {
                 const response = await fetch(API_URL);
@@ -70,34 +150,32 @@
                 document.getElementById('sync-status').textContent = '✅ ซิงค์แล้ว';
                 renderApp();
             } catch (error) {
-                document.getElementById('sync-status').textContent = '⚠️ ออฟไลน์';
-                renderApp(); // ใช้ข้อมูล default หรือข้อมูลที่ค้างใน memory ไปก่อน
+                document.getElementById('sync-status').textContent = '⚠️ ออฟไลน์ (ใช้ข้อมูลในเครื่อง)';
+                renderApp();
             }
         }
 
-        // เซฟข้อมูลไป Backend
         async function saveData() {
             document.getElementById('sync-status').textContent = '⏳ กำลังเซฟ...';
             try {
                 await fetch(API_URL, {
                     method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(scheduleData)
                 });
                 document.getElementById('sync-status').textContent = '✅ เซฟแล้ว';
-                renderApp(); // Rerender เพื่ออัปเดต Progress/Alert
             } catch (error) {
                 document.getElementById('sync-status').textContent = '❌ เซฟล้มเหลว';
             }
         }
 
-        // Event listener สำหรับแก้ไขข้อมูล (Debounce)
         let timeout = null;
         function updateData(id, field, value) {
             const index = scheduleData.findIndex(item => item.id === id);
             if(index > -1) {
                 scheduleData[index][field] = value;
                 clearTimeout(timeout);
-                timeout = setTimeout(saveData, 800); // รอพิมพ์เสร็จ 0.8 วิค่อยเซฟ
+                timeout = setTimeout(saveData, 1000);
             }
         }
 
@@ -105,134 +183,148 @@
             const index = scheduleData.findIndex(item => item.id === id);
             if(index > -1) {
                 scheduleData[index][field] = isChecked;
-                saveData(); // ติ๊กปุ๊บเซฟปั๊บ
+                renderApp(); 
+                saveData();  
             }
         }
 
-        // คำนวณวันทำการ (หักเสาร์-อาทิตย์)
         function getWorkingDaysDiff(targetDateStr) {
             const targetDate = new Date(targetDateStr);
             const today = new Date();
-            today.setHours(0,0,0,0);
-            targetDate.setHours(0,0,0,0);
+            today.setHours(0,0,0,0); targetDate.setHours(0,0,0,0);
+            if(targetDate < today) return -1;
             
-            let daysDiff = 0;
-            let current = new Date(today);
-            
-            if(targetDate < today) return -1; // ผ่านไปแล้ว
-            
+            let daysDiff = 0, current = new Date(today);
             while(current < targetDate) {
                 current.setDate(current.getDate() + 1);
-                if(current.getDay() !== 0 && current.getDay() !== 6) { // ไม่ใช่อาทิตย์(0) และเสาร์(6)
-                    daysDiff++;
-                }
+                if(current.getDay() !== 0 && current.getDay() !== 6) daysDiff++;
             }
             return daysDiff;
         }
 
-        // สร้างหน้าจอ
+        function generateCardHTML(item) {
+            const itemDate = new Date(item.date);
+            const colorClass = `pastel-${item.clinic}` || 'pastel-DEFAULT';
+            
+            // --- Format วันที่ใหม่ (จันทร์ 22/9/69 คาบเช้า) ---
+            const daysTH = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัส', 'ศุกร์', 'เสาร์'];
+            const dayName = daysTH[itemDate.getDay()];
+            const d = itemDate.getDate();
+            const m = itemDate.getMonth() + 1;
+            const y = (itemDate.getFullYear() + 543).toString().slice(-2);
+            const dateStr = `${dayName} ${d}/${m}/${y} คาบ${item.period}`;
+            
+            // ช่อง Input เล็กๆ
+            let extraInputs = '';
+            if(item.clinic === 'OPER') {
+                extraInputs = `<input type="text" placeholder="Req" class="w-16 text-[13px] py-1.5 px-2 border border-white/60 rounded-lg bg-white/70 focus:bg-white text-center shadow-sm placeholder-slate-400 focus:outline-none transition-colors" value="${item.req}" oninput="updateData('${item.id}', 'req', this.value)">`;
+            } else if (item.clinic.startsWith('PED')) {
+                extraInputs = `<input type="text" placeholder="Credit" class="w-16 text-[13px] py-1.5 px-2 border border-white/60 rounded-lg bg-white/70 focus:bg-white text-center shadow-sm placeholder-slate-400 focus:outline-none transition-colors" value="${item.credit}" oninput="updateData('${item.id}', 'credit', this.value)">`;
+            }
+
+            // Checkbox จองเครื่องมือ (เฉพาะ Prosth / Perio)
+            const isProsthPerio = (item.clinic === 'PROSTH' || item.clinic === 'PERIO');
+            const dtisLink = isProsthPerio ? `<a href="http://dtis.dent.chula.ac.th/DentalEquipmentSystem" target="_blank" class="text-[11px] text-blue-600 underline ml-2 bg-blue-50/80 px-2 py-0.5 rounded-full border border-blue-100/50">ไปหน้าจอง</a>` : '';
+            const toolCheckbox = isProsthPerio ? `
+                <div class="flex items-center">
+                    <label class="flex items-center text-[13px] cursor-pointer font-medium">
+                        <input type="checkbox" class="mr-1.5 w-4 h-4 text-blue-500 rounded border-slate-300 bg-white" ${item.toolBooked ? 'checked' : ''} onchange="toggleCheckbox('${item.id}', 'toolBooked', this.checked)">
+                        <span class="${item.toolBooked ? 'opacity-50 line-through' : 'text-slate-700'}">จองเครื่องมือ</span>
+                    </label>
+                    ${dtisLink}
+                </div>` : '';
+
+            // Card Structure ที่บางและกระชับขึ้น
+            return `
+                <div class="rounded-xl border shadow-sm p-3 ${colorClass}">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <div class="text-[17px] font-bold text-slate-800 tracking-tight leading-tight">${dateStr}</div>
+                            <h3 class="font-extrabold text-[14px] leading-tight mt-0.5 opacity-70">${item.clinic}</h3>
+                        </div>
+                        <div class="bg-white/80 px-2.5 py-1 rounded-lg text-[11px] font-bold border border-white/60 shadow-sm text-slate-700 shrink-0">
+                            ยูนิต: ${item.unit || '-'}
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2 mb-2">
+                        <input type="text" placeholder="ระบุงานที่จะทำ..." class="w-full py-1.5 px-2.5 rounded-lg text-[13px] border border-white/60 bg-white/70 focus:bg-white focus:outline-none transition-colors text-slate-800 font-medium placeholder-slate-500 shadow-sm" value="${item.task}" oninput="updateData('${item.id}', 'task', this.value)">
+                        ${extraInputs}
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-x-5 gap-y-2 pt-2 border-t border-black/5 mt-1">
+                        <label class="flex items-center text-[13px] cursor-pointer font-medium">
+                            <input type="checkbox" class="mr-1.5 w-4 h-4 text-blue-500 rounded border-slate-300 bg-white" ${item.apptDone ? 'checked' : ''} onchange="toggleCheckbox('${item.id}', 'apptDone', this.checked)">
+                            <span class="${item.apptDone ? 'opacity-50 line-through' : 'text-slate-700'}">ทำนัด</span>
+                        </label>
+                        ${toolCheckbox}
+                    </div>
+                </div>
+            `;
+        }
+
         function renderApp() {
-            const listEl = document.getElementById('clinic-list');
-            const alertEl = document.getElementById('alert-container');
             const today = new Date();
             today.setHours(0,0,0,0);
-
-            listEl.innerHTML = '';
-            alertEl.innerHTML = '';
             
-            let pastCount = 0;
-            let totalCount = scheduleData.length;
+            const next7Days = new Date(today);
+            next7Days.setDate(today.getDate() + 7);
 
-            // Sort วันที่
+            let pastCount = 0;
+            const thisWeekEl = document.getElementById('this-week-list');
+            const allClinicEl = document.getElementById('all-clinic-list');
+            const alertEl = document.getElementById('alert-container');
+
+            thisWeekEl.innerHTML = '';
+            allClinicEl.innerHTML = '';
+            alertEl.innerHTML = '';
+
             const sortedData = [...scheduleData].sort((a,b) => new Date(a.date) - new Date(b.date));
 
             sortedData.forEach(item => {
                 const itemDate = new Date(item.date);
                 itemDate.setHours(0,0,0,0);
 
-                // --- คำนวณ Progress ---
                 if(itemDate < today) pastCount++;
                 else if (itemDate.getTime() === today.getTime() && item.period === 'เช้า' && new Date().getHours() >= 12) pastCount++;
 
-                // --- แจ้งเตือนจองเครื่องมือ (เฉพาะ Prosth, Perio ล่วงหน้าไม่เกิน 2 วันทำการ) ---
+                // Alert (เฉพาะอันที่ยังไม่จอง)
                 if((item.clinic === 'PROSTH' || item.clinic === 'PERIO') && !item.toolBooked) {
                     const workingDaysLeft = getWorkingDaysDiff(item.date);
                     if(workingDaysLeft >= 0 && workingDaysLeft <= 2) {
-                        // รูปแบบวันที่ภาษาไทย
-                        const dateStr = itemDate.toLocaleDateString('th-TH', {day:'numeric', month:'short'});
+                        const daysTH = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัส', 'ศุกร์', 'เสาร์'];
+                        const dateAlert = `${daysTH[itemDate.getDay()]} ${itemDate.getDate()}/${itemDate.getMonth()+1}/${(itemDate.getFullYear()+543).toString().slice(-2)} คาบ${item.period}`;
+                        
                         alertEl.innerHTML += `
-                            <div class="bg-red-50 border border-red-200 text-red-600 p-3 rounded-lg text-sm flex items-center shadow-sm">
-                                <span class="text-xl mr-2">🚨</span> 
+                            <div class="bg-red-50 border border-red-200 text-red-700 p-3 rounded-xl text-sm flex items-center shadow-sm">
+                                <span class="text-2xl mr-3 drop-shadow-sm">🚨</span> 
                                 <div>
-                                    <span class="font-bold">อย่าลืมจองเครื่องมือ ${item.clinic}</span><br>
-                                    วันที่ ${dateStr} ${item.period} | ยูนิต ${item.unit}
+                                    <span class="font-bold block leading-tight">อย่าลืมจองเครื่องมือ ${item.clinic}</span>
+                                    <span class="text-[12px] opacity-90">วันที่ ${dateAlert} | ยูนิต ${item.unit || '-'}</span>
                                 </div>
                             </div>
                         `;
                     }
                 }
 
-                // --- แสดงการ์ดเฉพาะวันนี้ และอนาคต ---
-                if(itemDate >= today) {
-                    const colorClass = `pastel-${item.clinic}` || 'pastel-DEFAULT';
-                    const dateStr = itemDate.toLocaleDateString('th-TH', {day:'numeric', month:'short', year:'2-digit'});
-                    
-                    let extraInputs = '';
-                    if(item.clinic === 'OPER') {
-                        extraInputs = `<input type="text" placeholder="Req" class="w-20 text-sm p-1 border rounded bg-white" value="${item.req}" oninput="updateData('${item.id}', 'req', this.value)">`;
-                    } else if (item.clinic.startsWith('PED')) {
-                        extraInputs = `<input type="text" placeholder="Credit" class="w-20 text-sm p-1 border rounded bg-white" value="${item.credit}" oninput="updateData('${item.id}', 'credit', this.value)">`;
-                    }
-
-                    const dtisLink = (item.clinic === 'PROSTH' || item.clinic === 'PERIO') 
-                        ? `<a href="http://dtis.dent.chula.ac.th/DentalEquipmentSystem" target="_blank" class="text-xs text-blue-500 underline ml-2">ไปหน้าจอง</a>` 
-                        : '';
-
-                    listEl.innerHTML += `
-                        <div class="rounded-xl border shadow-sm p-4 ${colorClass}">
-                            <div class="flex justify-between items-start mb-2">
-                                <div>
-                                    <h3 class="font-bold text-lg">${item.clinic}</h3>
-                                    <p class="text-xs opacity-80">${dateStr} (${item.period})</p>
-                                </div>
-                                <div class="bg-white/60 px-3 py-1 rounded-full text-sm font-semibold border border-white/50 shadow-sm">
-                                    ยูนิต: ${item.unit}
-                                </div>
-                            </div>
-                            
-                            <div class="mt-3">
-                                <label class="text-xs font-semibold opacity-80">งานที่จะทำ</label>
-                                <input type="text" class="w-full p-2 mt-1 rounded-lg text-sm border-white/50 bg-white/80 focus:outline-none" value="${item.task}" oninput="updateData('${item.id}', 'task', this.value)">
-                            </div>
-
-                            <div class="mt-3 flex items-center space-x-2">
-                                ${extraInputs}
-                            </div>
-
-                            <div class="mt-4 flex flex-col space-y-2">
-                                <label class="flex items-center text-sm cursor-pointer">
-                                    <input type="checkbox" class="mr-2 w-4 h-4 rounded text-blue-500" ${item.apptDone ? 'checked' : ''} onchange="toggleCheckbox('${item.id}', 'apptDone', this.checked)">
-                                    ทำนัดแล้ว
-                                </label>
-                                <label class="flex items-center text-sm cursor-pointer">
-                                    <input type="checkbox" class="mr-2 w-4 h-4 rounded text-blue-500" ${item.toolBooked ? 'checked' : ''} onchange="toggleCheckbox('${item.id}', 'toolBooked', this.checked)">
-                                    จองเครื่องมือแล้ว ${dtisLink}
-                                </label>
-                            </div>
-                        </div>
-                    `;
+                const cardHtml = generateCardHTML(item);
+                allClinicEl.innerHTML += cardHtml; 
+                
+                if(itemDate >= today && itemDate <= next7Days) {
+                    thisWeekEl.innerHTML += cardHtml;
                 }
             });
 
-            // อัปเดต Progress
-            const progressPercent = totalCount === 0 ? 0 : Math.round((pastCount / totalCount) * 100);
+            if(thisWeekEl.innerHTML === '') {
+                thisWeekEl.innerHTML = `<div class="text-center p-6 text-slate-400 text-sm bg-slate-50 rounded-xl border border-dashed border-slate-200">ไม่มีคลินิกในช่วง 7 วันนี้ครับ 🎉</div>`;
+            }
+
+            const progressPercent = Math.round((pastCount / TOTAL_CLINICS) * 100);
             document.getElementById('progress-bar').style.width = `${progressPercent}%`;
-            document.getElementById('progress-text').textContent = `${progressPercent}% (${pastCount}/${totalCount})`;
+            document.getElementById('progress-text').textContent = `${progressPercent}% (${pastCount}/${TOTAL_CLINICS})`;
         }
 
-        // Initial load
         window.onload = loadData;
-
     </script>
 </body>
 </html>
